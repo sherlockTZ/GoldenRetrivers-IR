@@ -50,7 +50,8 @@ public class SearchFiles {
 
         System.out.println("Reading in queries...");
         Boolean test = true;
-        Boolean collect = false;
+        Boolean collect_desc = false;
+        Boolean collect_narr = false;
 
         while ((line = buffer.readLine()) != null) {
             // loops until end of file
@@ -58,28 +59,34 @@ public class SearchFiles {
             if(line.isEmpty() == false) {
                 // System.out.println(line);
                 if(line.trim().equals("<desc> Description:")) {
-                    collect = true;
+                    collect_desc = true;
+                    collect_narr = true;
                     queryString = "";
                 }
-                else if(collect == true) {
+                else if(line.trim().equals("<narr> Narrative:")) {
+                    // queryString += " ";
+                }
+                else if(collect_desc == true || collect_narr == true) {
                     queryString += " " + line;
                 }
                 else {
                     queryString = "";
                 }
             }
-            else if (collect == true) {
+            else if (collect_desc == true && collect_narr == true){
+                collect_desc = false;
+            }
+            else if (collect_desc == false && collect_narr == true){
                 //add query string to ArrayList and then turn off collection
+                collect_narr = false;
                 queries.add(queryString);
                 queryid.add(queryID);
-                collect = false;
                 queryString = "";
                 queryID++;
             }
             else {
                 queryString = "";
             }
-
         }
 
         return queries;
